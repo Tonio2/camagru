@@ -16,20 +16,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$uname = $_POST["username"];
 	$pwd = $_POST["password"];
 
-	$sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+	$sql = "SELECT * FROM users WHERE username = ?";
 	$stmt = $conn->prepare($sql);
-	$stmt->bind_param("ss", $uname, $pwd);
+	$stmt->bind_param("s", $uname);
 	$stmt->execute();
 	$res = $stmt->get_result();
 
 	if ($res->num_rows > 0) {
-		session_start();
-		$_SESSION["logged_in"] = true;
-		$_SESSION["uname"] = $res->fetch_assoc()["username"];
-		header("Location: index.php");
-	} else {
-		$msg = 'invalid credentials';
+		$row = $res->fetch_assoc();
+		$hash = $row["password"];
+		if (password_verify($pwd, $hash)) {
+			session_start();
+			$_SESSION["logged_in"] = true;
+			$_SESSION["uname"] = $row["username"];
+			header("Location: index.php");
+		}
 	}
+	
+	$msg = 'invalid credentials';
 }
 
 $conn->close();

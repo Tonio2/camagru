@@ -13,9 +13,10 @@ if (!$conn) {
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$uname = $_POST["username"];
 	$pwd = $_POST["password"];
+	$hash = password_hash($pwd, PASSWORD_DEFAULT);
 	$sql = "INSERT INTO users(username, password) values(?, ?)";
 	$stmt = $conn->prepare($sql);
-	$stmt->bind_param("ss", $uname, $pwd);
+	$stmt->bind_param("ss", $uname, $hash);
 	if ($stmt->execute()) {
 		$msg = "Registration successfull";
 	} else {
