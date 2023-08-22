@@ -1,4 +1,7 @@
-Docker : print a php file from docker
+Docker :
+- print a php file from docker
+- print a db info from docker
+- store all info in a .env file to not expose it on github
 
 Authentification : set up login and registration
 
