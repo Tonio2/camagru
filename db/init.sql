@@ -8,4 +8,10 @@ CREATE TABLE IF NOT EXISTS users (
 	password VARCHAR(255) NOT NULL
 );
 
-INSERT INTO users (username, password) VALUES ("test", "test");
+CREATE TABLE IF NOT EXISTS pictures (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	user_id INT NOT NULL,
+	src VARCHAR(255) NOT NULL,
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	FOREIGN KEY(user_id) REFERENCES users(id)
+)
