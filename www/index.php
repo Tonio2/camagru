@@ -7,20 +7,45 @@ $password = $_ENV["MYSQL_PASSWORD"];
 $conn = mysqli_connect($host, $user, $password, $db);
 
 if (!$conn) {
-		die("Connection failed: " . mysqli_connect_error());
+	die("Connection failed: " . mysqli_connect_error());
 }
 
-$sql = "SELECT * FROM users";
+$msg = "";
 
-$result = $conn->query($sql);
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+	$uname = $_POST["username"];
+	$pwd = $_POST["password"];
 
-if ($result->num_rows > 0) {
-	while ($row = $result->fetch_assoc()) {
-		echo $row["username"];
+	$sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+	$stmt = $conn->prepare($sql);
+	$stmt->bind_param("ss", $uname, $pwd);
+	$stmt->execute();
+	$res = $stmt->get_result();
+
+	if ($res->num_rows > 0) {
+		$msg = 'well played';
+	} else {
+		$msg = 'do better next time';
 	}
-} else {
-	echo 'No result';
 }
 
 $conn->close();
 ?>
+
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Login</title>
+</head>
+
+<body>
+	<form method="POST">
+		<input type="text" name="username" />
+		<input type="password" name="password" />
+		<input type="submit" value="login" />
+	</form>
+	<p><?php echo $msg; ?></p>
+</body>
+
+</html>
