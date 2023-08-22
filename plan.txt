@@ -6,8 +6,9 @@ Docker :
 Authentification : set up login and registration
 - set up user table, programmatically set up a user and display his username
 - set up a html form to login and display a result message
-- set up a second route
+- set up a second protected route
 - set up password encryption and registration & update login to use password encryption
+- handle errors like username already exists
 
 User input : allow user to upload pictures
 
