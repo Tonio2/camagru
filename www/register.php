@@ -1,4 +1,4 @@
-<?php
+<?
 $host = "db";
 $db = $_ENV["MYSQL_DATABASE"];
 $user = $_ENV["MYSQL_USER"];
@@ -10,45 +10,36 @@ if (!$conn) {
 	die("Connection failed: " . mysqli_connect_error());
 }
 
-$msg = "";
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$uname = $_POST["username"];
 	$pwd = $_POST["password"];
-
-	$sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+	$sql = "INSERT INTO users(username, password) values(?, ?)";
 	$stmt = $conn->prepare($sql);
 	$stmt->bind_param("ss", $uname, $pwd);
-	$stmt->execute();
-	$res = $stmt->get_result();
-
-	if ($res->num_rows > 0) {
-		session_start();
-		$_SESSION["logged_in"] = true;
-		header("Location: index.php");
+	if ($stmt->execute()) {
+		$msg = "Registration successfull";
 	} else {
-		$msg = 'invalid credentials';
+		$msg = "Registration failed";
 	}
 }
 
-$conn->close();
 ?>
 
 <!DOCTYPE html>
 <html>
 
 <head>
-	<title>Login</title>
+	<title>Register</title>
 </head>
 
 <body>
 	<form method="POST">
 		<input type="text" name="username" />
 		<input type="password" name="password" />
-		<input type="submit" value="login" />
+		<input type="submit" value="register" />
 	</form>
-	<a href="/register.php">Create an account</a>
 	<p><?php echo $msg; ?></p>
+	<a href="/login.php">Login</a>
 </body>
 
 </html>
