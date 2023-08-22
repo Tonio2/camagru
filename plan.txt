@@ -1,0 +1,9 @@
+Docker : print a php file from docker
+
+Authentification : set up login and registration
+
+User input : allow user to upload pictures
+
+Refactor : better error handling, tempalate & code organization
+
+Adding subsequent feature : editing, likes, comment, public page
