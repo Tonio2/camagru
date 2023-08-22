@@ -11,6 +11,9 @@ Authentification : set up login and registration
 - handle errors like username already exists
 
 User input : allow user to upload pictures
+ - set up pictures table
+ - set up a form to add pictures & set up picture storage on disk
+ - display all pictures on public page
 
 Refactor : better error handling, tempalate & code organization
 
