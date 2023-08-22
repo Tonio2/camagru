@@ -4,6 +4,10 @@ Docker :
 - store all info in a .env file to not expose it on github
 
 Authentification : set up login and registration
+- set up user table, programmatically set up a user and display his username
+- set up a html form to login and display a result message
+- set up a second route
+- set up password encryption and registration & update login to use password encryption
 
 User input : allow user to upload pictures
 
