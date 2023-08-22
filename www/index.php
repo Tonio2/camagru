@@ -18,6 +18,7 @@ echo "hello " . $_SESSION["uname"];
 <body>
 	<a href="/logout.php">Logout</a>
 	<a href="/delete.php">Delete account</a>
+	<img src="/uploads/test.jpg" alt="failed to load" />
 </body>
 
 </html>
