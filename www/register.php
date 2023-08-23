@@ -1,4 +1,4 @@
-<?
+<?php
 $host = "db";
 $db = $_ENV["MYSQL_DATABASE"];
 $user = $_ENV["MYSQL_USER"];
