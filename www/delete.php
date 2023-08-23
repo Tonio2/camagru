@@ -16,9 +16,17 @@ if (!$conn) {
 	die("Connection failed: " . mysqli_connect_error());
 }
 
+if (!isset($_SESSION["csrfToken"])) {
+	$_SESSION["csrfToken"] = bin2hex(random_bytes(32));
+}
+
 $msg = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+	if (!isset($_POST["csrfToken"]) || $_POST["csrfToken"] != $_SESSION["csrfToken"]) {
+		die("CSRF attack");
+	}
+
 	$uname = $_SESSION["uname"];
 
 	$sql = "DELETE FROM users WHERE username = ?";
@@ -27,21 +35,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	if ($stmt->execute()) {
 		header("Location: /logout.php");
 	} else {
-		$msg = "Failed to delete account";
+		$msg = "Failed to delete account" . $stmt->error;;
 	}
 }
 ?>
 
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>Delete account</title>
-	</head>
+<head>
+	<title>Delete account</title>
+</head>
 
-	<body>
-		<p>Are you sure ? This action is not reversible</p>
-		<form method="post">
-			<input type="submit" value="Delete account" />
-		</form>
-	</body>
+<body>
+	<p>Are you sure ? This action is not reversible</p>
+	<form method="post">
+		<input type="hidden" name="csrfToken" value="<?php echo $_SESSION["csrfToken"]; ?>" />
+		<input type="submit" value="Delete account" />
+	</form>
+</body>
 </html>
