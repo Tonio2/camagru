@@ -64,7 +64,11 @@ $conn->close();
 		<input type="file" name="picture" />
 		<input type="submit" value="upload" />
 	</form>
-	<p><?php echo $msg; ?></p>
+	<?php if (!empty($msg)) : ?>
+		<div class="error-message">
+			<?php echo htmlentities($msg, ENT_QUOTES, 'UTF-8'); ?>
+		</div>
+	<?php endif; ?>
 </body>
 
 </html>

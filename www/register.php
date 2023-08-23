@@ -47,7 +47,11 @@ $conn->close();
 		<input type="password" name="password" />
 		<input type="submit" value="register" />
 	</form>
-	<p><?php echo $msg; ?></p>
+	<?php if (!empty($msg)) : ?>
+		<div class="error-message">
+			<?php echo htmlentities($msg, ENT_QUOTES, 'UTF-8'); ?>
+		</div>
+	<?php endif; ?>
 	<a href="/login.php">Login</a>
 </body>
 

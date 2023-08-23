@@ -60,7 +60,11 @@ $conn->close();
 		<input type="submit" value="login" />
 	</form>
 	<a href="/register.php">Create an account</a>
-	<p><?php echo $msg; ?></p>
+	<?php if (!empty($msg)) : ?>
+		<div class="error-message">
+			<?php echo htmlentities($msg, ENT_QUOTES, 'UTF-8'); ?>
+		</div>
+	<?php endif; ?>
 </body>
 
 </html>
