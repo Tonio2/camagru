@@ -29,6 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 			session_start();
 			$_SESSION["logged_in"] = true;
 			$_SESSION["uname"] = $row["username"];
+			$_SESSION["userId"] = $row["id"];
 			header("Location: index.php");
 		}
 	}

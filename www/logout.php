@@ -9,6 +9,10 @@ if (isset($_SESSION["uname"])) {
 	unset($_SESSION["uname"]);
 }
 
+if (isset($_SESSION["userId"])) {
+	unset($_SESSION["userId"]);
+}
+
 session_destroy();
 
 header("Location: login.php");
