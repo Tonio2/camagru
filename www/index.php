@@ -3,6 +3,7 @@ session_start();
 
 if (!isset($_SESSION["logged_in"]) || !$_SESSION["logged_in"]) {
 	header("Location: login.php");
+	exit();
 }
 
 $host = "db";
@@ -33,7 +34,7 @@ $res = $stmt->get_result();
 </head>
 
 <body>
-	<p><?php echo $greeting; ?></p>
+	<p><?php echo htmlentities($greeting, ENT_QUOTES, 'UTF-8'); ?></p>
 	<a href="/logout.php">Logout</a>
 	<a href="/delete.php">Delete account</a>
 	<a href="/upload.php">Upload image</a>

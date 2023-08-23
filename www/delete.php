@@ -1,8 +1,13 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 session_start();
 
 if (!isset($_SESSION["logged_in"]) || !$_SESSION["logged_in"]) {
 	header("Location: login.php");
+	exit();
 }
 
 $host = "db";
@@ -42,6 +47,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <!DOCTYPE html>
 <html>
+
 <head>
 	<title>Delete account</title>
 </head>
@@ -52,5 +58,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		<input type="hidden" name="csrfToken" value="<?php echo $_SESSION["csrfToken"]; ?>" />
 		<input type="submit" value="Delete account" />
 	</form>
+	<?php if (!empty($msg)) : ?>
+		<div class="error-message">
+			<?php echo htmlentities($msg, ENT_QUOTES, 'UTF-8'); ?>
+		</div>
+	<?php endif; ?>
+
 </body>
+
 </html>

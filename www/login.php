@@ -1,4 +1,10 @@
 <?php
+
+if (isset($_SESSION["logged_in"]) && $_SESSION["logged_in"]) {
+	header("Location: index.php");
+	exit();
+}
+
 $host = "db";
 $db = $_ENV["MYSQL_DATABASE"];
 $user = $_ENV["MYSQL_USER"];
