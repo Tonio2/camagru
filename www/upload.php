@@ -7,7 +7,6 @@ if (!isset($_SESSION["logged_in"]) || !$_SESSION["logged_in"]) {
 }
 
 $userId = $_SESSION["userId"];
-echo $userId;
 
 $host = "db";
 $db = $_ENV["MYSQL_DATABASE"];
@@ -20,16 +19,26 @@ if (!$conn) {
 	die("Connection failed: " . mysqli_connect_error());
 }
 
-$msg = "";
+if (!isset($_SESSION["csrfToken"])) {
+	$_SESSION["csrfToken"] = bin2hex(random_bytes(32));
+}
 
+$msg = "";
+echo "hello";
+print_r($_FILES);
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["picture"])) {
+	if (!isset($_POST["csrfToken"]) || $_POST["csrfToken"] != $_SESSION["csrfToken"]) {
+		die("CSRF attack");
+	}
+
 	$file = $_FILES["picture"];
+	print_r($file);
 	$filename = $file["tmp_name"];
 	$targetPath = "uploads/" . basename($_FILES["picture"]["name"]);
 
 	print($filename);
-	print_r($targetPath)	;
+	print_r($targetPath);
 
 	if (getimagesize($filename)) {
 		if (move_uploaded_file($filename, $targetPath)) {
@@ -61,6 +70,7 @@ $conn->close();
 
 <body>
 	<form method="POST" enctype="multipart/form-data">
+		<input type="hidden" name="csrfToken" value="<?php echo $_SESSION["csrfToken"]; ?>" />
 		<input type="file" name="picture" />
 		<input type="submit" value="upload" />
 	</form>
