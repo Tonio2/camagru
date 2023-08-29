@@ -24,8 +24,6 @@ if (!isset($_SESSION["csrfToken"])) {
 }
 
 $msg = "";
-echo "hello";
-print_r($_FILES);
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["picture"])) {
 	if (!isset($_POST["csrfToken"]) || $_POST["csrfToken"] != $_SESSION["csrfToken"]) {
@@ -33,12 +31,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["picture"])) {
 	}
 
 	$file = $_FILES["picture"];
-	print_r($file);
 	$filename = $file["tmp_name"];
 	$targetPath = "uploads/" . basename($_FILES["picture"]["name"]);
-
-	print($filename);
-	print_r($targetPath);
 
 	if (getimagesize($filename)) {
 		if (move_uploaded_file($filename, $targetPath)) {
