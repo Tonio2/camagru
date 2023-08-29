@@ -32,7 +32,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["picture"])) {
 
 	$file = $_FILES["picture"];
 	$filename = $file["tmp_name"];
-	$targetPath = "uploads/" . basename($_FILES["picture"]["name"]);
+	$unique_filename = uniqid() . '.jpg';
+	$targetPath = "uploads/" . $unique_filename;
 
 	$allowedExtensions = ['png', 'jpg', 'jpeg'];
 	$fileExtension = pathinfo($file["name"], PATHINFO_EXTENSION);
