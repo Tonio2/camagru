@@ -34,8 +34,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["picture"])) {
 	$filename = $file["tmp_name"];
 	$targetPath = "uploads/" . basename($_FILES["picture"]["name"]);
 
+	$allowedExtensions = ['png', 'jpg', 'jpeg'];
+	$fileExtension = pathinfo($file["name"], PATHINFO_EXTENSION);
+	if (!in_array($fileExtension, $allowedExtensions)) {
+		die("Extension not allowed");
+	}
+
+	$allowedMime = ["image/jpeg", "image/png"];
+	$info = finfo_open(FILEINFO_MIME);
+	$mime = finfo_file($info, $filename);
+	finfo_close($info);
+	if (!in_array($mime, $allowedMime)) {
+		die("MIME type not allowed");
+	}
+
+	$maxFileSize = 1024 * 1024 * 5;
+	$fileSize = $file["size"];
+	if ($fileSize > $maxFileSize) {
+		die("File too large");
+	}
+
 	if (getimagesize($filename)) {
-		if (move_uploaded_file($filename, $targetPath)) {
+		$image = imagecreatefromstring(file_get_contents($filename));
+		if (imagejpeg($image, $targetPath, 85)) {
 			$sql = "INSERT INTO pictures(user_id, src) VALUES(?, ?)";
 			$stmt = $conn->prepare($sql);
 			$stmt->bind_param("is", $userId, $targetPath);
