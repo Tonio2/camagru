@@ -16,5 +16,12 @@ User input : allow user to upload pictures
  - display all pictures on public page
 
 Refactor : better error handling, tempalate & code organization
+ - set up csrf protection
+ - protect routes
+ - escape special characters in db displayed informations
+ - validate and sanitize user input for forms
+ - validate image upload
+ - handle errors properly
+ -
 
 Adding subsequent feature : editing, likes, comment, public page
