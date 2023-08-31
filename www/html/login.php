@@ -1,22 +1,13 @@
 <?php
 
-session_start();
+require_once "../classes/session.php";
+require_once "../classes/database.php";
 
-if (isset($_SESSION["logged_in"]) && $_SESSION["logged_in"]) {
-	header("Location: index.php");
-	exit();
-}
+$session = new Session();
+$session->require_not_auth();
 
-$host = "db";
-$db = $_ENV["MYSQL_DATABASE"];
-$user = $_ENV["MYSQL_USER"];
-$password = $_ENV["MYSQL_PASSWORD"];
-
-$conn = mysqli_connect($host, $user, $password, $db);
-
-if (!$conn) {
-	die("Connection failed: " . mysqli_connect_error());
-}
+$db = Database::getInstance();
+$conn = $db->getConnection();
 
 $msg = "";
 
@@ -34,18 +25,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		$row = $res->fetch_assoc();
 		$hash = $row["password"];
 		if (password_verify($pwd, $hash)) {
-			session_start();
-			$_SESSION["logged_in"] = true;
-			$_SESSION["uname"] = $row["username"];
-			$_SESSION["userId"] = $row["id"];
-			header("Location: index.php");
+			$session->regenerate();
+			$session->set("logged_in", true);
+			$session->set("uname", $row["username"]);
+			$session->set("userId", $row["id"]);
+			$session->redirect("index.php");
 		}
 	}
 	
 	$msg = 'invalid credentials';
 }
 
-$conn->close();
+$db->closeConnection();
 ?>
 
 <!DOCTYPE html>
