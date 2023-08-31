@@ -41,7 +41,7 @@ $res = $stmt->get_result();
 	<h2>List of uploaded images</h2>
 	<?php
 	while($row = $res->fetch_assoc()) {
-		echo "<img src='" . $row["src"] . "' alt='picture' />";
+		echo "<img src='image.php?src=" . $row["src"] . "' alt='picture' />";
 	}
 	?>
 </body>

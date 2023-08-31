@@ -33,7 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["picture"])) {
 	$file = $_FILES["picture"];
 	$filename = $file["tmp_name"];
 	$unique_filename = uniqid() . '.jpg';
-	$targetPath = "uploads/" . $unique_filename;
+	$targetPath = "../uploads/" . $unique_filename;
 
 	$allowedExtensions = ['png', 'jpg', 'jpeg'];
 	$fileExtension = pathinfo($file["name"], PATHINFO_EXTENSION);
@@ -41,12 +41,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["picture"])) {
 		die("Extension not allowed");
 	}
 
-	$allowedMime = ["image/jpeg", "image/png"];
+	$allowedMimes = ["image/jpeg", "image/png"];
 	$info = finfo_open(FILEINFO_MIME);
 	$mime = finfo_file($info, $filename);
 	finfo_close($info);
-	if (!in_array($mime, $allowedMime)) {
-		die("MIME type not allowed");
+	$îsValidMime = false;
+	foreach($allowedMimes as $allowedMime) {
+		if (strpos($mime, $allowedMime) === 0) {
+			$isValidMime = true;
+			break;
+		}
+	}
+
+	if (!$isValidMime) {
+		die("MIME type not allowed : " . $mime );
 	}
 
 	$maxFileSize = 1024 * 1024 * 5;
@@ -60,7 +68,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["picture"])) {
 		if (imagejpeg($image, $targetPath, 85)) {
 			$sql = "INSERT INTO pictures(user_id, src) VALUES(?, ?)";
 			$stmt = $conn->prepare($sql);
-			$stmt->bind_param("is", $userId, $targetPath);
+			$stmt->bind_param("is", $userId, $unique_filename);
 			if ($stmt->execute()) {
 				$msg = "File successfully uploaded";
 			} else {
