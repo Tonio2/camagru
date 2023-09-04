@@ -2,6 +2,7 @@
 require_once "../config/config.php";
 require_once "../classes/session.php";
 require_once "../classes/database.php";
+require_once "../utils/validate.php";
 
 $session = new Session();
 $session->require_not_auth();
@@ -13,8 +14,8 @@ $msg = "";
 
 //TODO: sanitize user's input
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-	$uname = $_POST["username"];
-	$pwd = $_POST["password"];
+	$uname = sanitizeInput($_POST["username"]);
+	$pwd = $_POST["password"]; // no need to sanitize it because it is hashed
 
 	$sql = "SELECT * FROM users WHERE username = ?";
 	$stmt = $conn->prepare($sql);
