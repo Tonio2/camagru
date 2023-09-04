@@ -25,3 +25,7 @@ Refactor : better error handling, tempalate & code organization
  - test that file log is created even thoug not in gitignore
 
 Adding subsequent feature : editing, likes, comment, public page
+ - edit image in backend with alpha image
+ - allow user to select the image he wants
+ - ui for upload page
+ - refactor to have same ui everywhere
