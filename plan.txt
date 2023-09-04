@@ -27,5 +27,6 @@ Refactor : better error handling, tempalate & code organization
 Adding subsequent feature : editing, likes, comment, public page
  - edit image in backend with alpha image
  - allow user to select the image he wants
+ - check how errors are handled
  - ui for upload page
  - refactor to have same ui everywhere
