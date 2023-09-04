@@ -9,7 +9,7 @@ $session->require_auth();
 $userId = $session->get("userId");
 $response = ["success" => false, "msg" => ""];
 
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["picture"])) {
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["picture"]) && isset($_POST["secondImage"])) {
 	$session->check_csrf();
 	$db = Database::getInstance();
 	$conn = $db->getConnection();
@@ -45,11 +45,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["picture"])) {
 		$response["msg"] = "File too large";
 	} elseif (getimagesize($filename)) {
 		$image = imagecreatefromstring(file_get_contents($filename));
-		$alpha_image = imagecreatefrompng("image1.png");
+		$alphaImgIdx = $_POST["secondImage"];
+		$alphaImgSrc = "image" . $alphaImgIdx . ".png";
+		$alpha_image = imagecreatefrompng($alphaImgSrc);
 		if ($image && $alpha_image) {
 			// Get dimensions of uploaded and alpha images
 			list($width, $height) = getimagesize($filename);
-			list($alpha_width, $alpha_height) = getimagesize("image1.png");
+			list($alpha_width, $alpha_height) = getimagesize($alphaImgSrc);
 
 			imagealphablending($image, true);
         imagesavealpha($image, true);

@@ -26,15 +26,15 @@ $csrfToken = $session->get('csrfToken');
 			<legend>Select a second image:</legend>
 			<div>
 				<input type="radio" id="image1" name="secondImage" value="1">
-				<label for="image1"><img src="image1.jpg" alt="Image 1" width="100" height="100"></label>
+				<label for="image1"><img src="image1.png" alt="Image 1" width="100" height="100"></label>
 			</div>
 			<div>
 				<input type="radio" id="image2" name="secondImage" value="2">
-				<label for="image2"><img src="image2.jpg" alt="Image 2" width="100" height="100"></label>
+				<label for="image2"><img src="image2.png" alt="Image 2" width="100" height="100"></label>
 			</div>
 			<div>
 				<input type="radio" id="image3" name="secondImage" value="3">
-				<label for="image3"><img src="image3.jpg" alt="Image 3" width="100" height="100"></label>
+				<label for="image3"><img src="image3.png" alt="Image 3" width="100" height="100"></label>
 			</div>
 		</fieldset>
 	</form>
@@ -50,10 +50,27 @@ $csrfToken = $session->get('csrfToken');
 		const captureButton = document.getElementById('capture');
 		const uploadBtn = document.getElementById('uploadBtn');
 		const fileInput = document.getElementById('picture');
+		const secondImage = document.getElementsByName('secondImage');
 		const errorMessage = document.getElementById('error-message');
 
 		function uploadImage(formData) {
 			formData.append('csrfToken', document.getElementById('csrf_token').value);
+
+			let secondImageSelected = false;
+			for (let i = 0; i < secondImage.length; i++) {
+				if (secondImage[i].checked) {
+					formData.append('secondImage', secondImage[i].value);
+					secondImageSelected = true;
+					break;
+				}
+			}
+
+			// If no second image is selected, display an error message
+			if (!secondImageSelected) {
+				errorMessage.textContent = "Please select a second image.";
+				return;
+			}
+
 			fetch('upload_data.php', {
 					method: 'POST',
 					body: formData,
