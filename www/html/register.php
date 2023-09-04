@@ -5,7 +5,7 @@ require_once "../classes/database.php";
 require_once "../utils/validate.php";
 
 $session = new Session();
-$session->require_auth();
+$session->require_not_auth();
 
 $db = Database::getInstance();
 $conn = $db->getConnection();
