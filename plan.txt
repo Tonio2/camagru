@@ -22,6 +22,6 @@ Refactor : better error handling, tempalate & code organization
  - validate and sanitize user input for forms
  - validate image upload
  - handle errors properly
- -
+ - test that file log is created even thoug not in gitignore
 
 Adding subsequent feature : editing, likes, comment, public page

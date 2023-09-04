@@ -71,4 +71,18 @@ class Session
 			$this->redirect("login.php");
 		}
 	}
+
+	public function set_csrf() {
+		if (!isset($_SESSION["csrfToken"])) {
+			$_SESSION["csrfToken"] = bin2hex(random_bytes(32));
+		}
+	}
+
+	public function check_csrf() {
+		if (!isset($_POST["csrfToken"]) || $_POST["csrfToken"] != $_SESSION["csrfToken"]) {
+			throw new Error("CSRF attack");
+		}
+	}
 }
+
+?>

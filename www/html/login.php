@@ -1,5 +1,5 @@
 <?php
-
+require_once "../config/config.php";
 require_once "../classes/session.php";
 require_once "../classes/database.php";
 
@@ -11,6 +11,7 @@ $conn = $db->getConnection();
 
 $msg = "";
 
+//TODO: sanitize user's input
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$uname = $_POST["username"];
 	$pwd = $_POST["password"];

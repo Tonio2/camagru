@@ -1,36 +1,19 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+require_once "../config/config.php";
+require_once "../classes/session.php";
+require_once "../classes/database.php";
 
-session_start();
+$session = new Session();
+$session->require_auth();
+$session->set_csrf();
 
-if (!isset($_SESSION["logged_in"]) || !$_SESSION["logged_in"]) {
-	header("Location: login.php");
-	exit();
-}
-
-$host = "db";
-$db = $_ENV["MYSQL_DATABASE"];
-$user = $_ENV["MYSQL_USER"];
-$password = $_ENV["MYSQL_PASSWORD"];
-
-$conn = mysqli_connect($host, $user, $password, $db);
-
-if (!$conn) {
-	die("Connection failed: " . mysqli_connect_error());
-}
-
-if (!isset($_SESSION["csrfToken"])) {
-	$_SESSION["csrfToken"] = bin2hex(random_bytes(32));
-}
+$db = Database::getInstance();
+$conn = $db->getConnection();
 
 $msg = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-	if (!isset($_POST["csrfToken"]) || $_POST["csrfToken"] != $_SESSION["csrfToken"]) {
-		die("CSRF attack");
-	}
+	$session->check_csrf();
 
 	$uname = $_SESSION["uname"];
 
@@ -38,9 +21,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$stmt = $conn->prepare($sql);
 	$stmt->bind_param("s", $uname);
 	if ($stmt->execute()) {
-		header("Location: /logout.php");
+		$session->redirect("logout.php");
 	} else {
-		$msg = "Failed to delete account" . $stmt->error;;
+		$msg = "Failed to delete account";
 	}
 }
 ?>

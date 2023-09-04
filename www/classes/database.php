@@ -13,7 +13,7 @@ class Database
 		$password = $_ENV["MYSQL_PASSWORD"];
 		$this->conn = new mysqli($host, $user, $password, $db);
 		if ($this->conn->connect_error) {
-			die("Connection failed: " . $this->conn->connect_error);
+			throw new Error("Database error: " . $this->conn->connect_error);
 		}
 	}
 
