@@ -12,7 +12,6 @@ $conn = $db->getConnection();
 
 $msg = "";
 
-//TODO: sanitize user's input
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$uname = sanitizeInput($_POST["username"]);
 	$pwd = $_POST["password"]; // no need to sanitize it because it is hashed

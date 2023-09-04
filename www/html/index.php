@@ -1,21 +1,13 @@
 <?php
-session_start();
+require_once "../config/config.php";
+require_once "../classes/session.php";
+require_once "../classes/database.php";
 
-if (!isset($_SESSION["logged_in"]) || !$_SESSION["logged_in"]) {
-	header("Location: login.php");
-	exit();
-}
+$session = new Session();
+$session->require_auth();
 
-$host = "db";
-$db = $_ENV["MYSQL_DATABASE"];
-$user = $_ENV["MYSQL_USER"];
-$password = $_ENV["MYSQL_PASSWORD"];
-
-$conn = mysqli_connect($host, $user, $password, $db);
-
-if (!$conn) {
-	die("Connection failed: " . mysqli_connect_error());
-}
+$db = Database::getInstance();
+$conn = $db->getConnection();
 
 $greeting = "Hello, " . $_SESSION["uname"];
 

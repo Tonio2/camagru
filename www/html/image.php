@@ -1,11 +1,9 @@
 <?php
-session_start();
+require_once "../config/config.php";
+require_once "../classes/session.php";
 
-if (!isset($_SESSION["logged_in"]) || !$_SESSION["logged_in"]) {
-	header('HTTP/1.0 403 Forbidden');
-	echo 'You are not allowed to access this file.';
-	exit;
-}
+$session = new Session();
+$session->require_auth();
 
 $imgPath = "../uploads/" . $_GET["src"];
 

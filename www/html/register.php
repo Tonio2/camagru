@@ -1,24 +1,14 @@
 <?php
-
+require_once "../config/config.php";
+require_once "../classes/session.php";
+require_once "../classes/database.php";
 require_once "../utils/validate.php";
 
-session_start();
+$session = new Session();
+$session->require_auth();
 
-if (isset($_SESSION["logged_in"]) && $_SESSION["logged_in"]) {
-	header("Location: index.php");
-	exit();
-}
-
-$host = "db";
-$db = $_ENV["MYSQL_DATABASE"];
-$user = $_ENV["MYSQL_USER"];
-$password = $_ENV["MYSQL_PASSWORD"];
-
-$conn = mysqli_connect($host, $user, $password, $db);
-
-if (!$conn) {
-	die("Connection failed: " . mysqli_connect_error());
-}
+$db = Database::getInstance();
+$conn = $db->getConnection();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$msg = "Bad Request";
@@ -38,7 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	}
 }
 
-$conn->close();
+$db->closeConnection();
 ?>
 
 <!DOCTYPE html>

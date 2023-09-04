@@ -1,19 +1,8 @@
 <?php
-session_start();
+require_once "../config/config.php";
+require_once "../classes/session.php";
 
-if (isset($_SESSION["logged_in"])) {
-	unset($_SESSION["logged_in"]);
-}
-
-if (isset($_SESSION["uname"])) {
-	unset($_SESSION["uname"]);
-}
-
-if (isset($_SESSION["userId"])) {
-	unset($_SESSION["userId"]);
-}
-
-session_destroy();
-
-header("Location: login.php");
+$session = new Session();
+$session->destroy();
+$session->redirect("login.php");
 ?>

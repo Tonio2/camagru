@@ -1,34 +1,20 @@
 <?php
-session_start();
+require_once "../config/config.php";
+require_once "../classes/session.php";
+require_once "../classes/database.php";
+require_once "../utils/validate.php";
 
-if (!isset($_SESSION["logged_in"]) || !$_SESSION["logged_in"]) {
-	header("Location: login.php");
-	exit();
-}
+$session = new Session();
+$session->require_auth();
+$session->set_csrf();
 
-$userId = $_SESSION["userId"];
-
-$host = "db";
-$db = $_ENV["MYSQL_DATABASE"];
-$user = $_ENV["MYSQL_USER"];
-$password = $_ENV["MYSQL_PASSWORD"];
-
-$conn = mysqli_connect($host, $user, $password, $db);
-
-if (!$conn) {
-	die("Connection failed: " . mysqli_connect_error());
-}
-
-if (!isset($_SESSION["csrfToken"])) {
-	$_SESSION["csrfToken"] = bin2hex(random_bytes(32));
-}
+$db = Database::getInstance();
+$conn = $db->getConnection();
 
 $msg = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["picture"])) {
-	if (!isset($_POST["csrfToken"]) || $_POST["csrfToken"] != $_SESSION["csrfToken"]) {
-		die("CSRF attack");
-	}
+	$session->check_csrf();
 
 	$file = $_FILES["picture"];
 	$filename = $file["tmp_name"];
@@ -37,9 +23,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["picture"])) {
 
 	$allowedExtensions = ['png', 'jpg', 'jpeg'];
 	$fileExtension = pathinfo($file["name"], PATHINFO_EXTENSION);
-	if (!in_array($fileExtension, $allowedExtensions)) {
-		die("Extension not allowed");
-	}
 
 	$allowedMimes = ["image/jpeg", "image/png"];
 	$info = finfo_open(FILEINFO_MIME);
@@ -53,17 +36,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["picture"])) {
 		}
 	}
 
-	if (!$isValidMime) {
-		die("MIME type not allowed : " . $mime );
-	}
-
 	$maxFileSize = 1024 * 1024 * 5;
 	$fileSize = $file["size"];
-	if ($fileSize > $maxFileSize) {
-		die("File too large");
-	}
 
-	if (getimagesize($filename)) {
+	if (!in_array($fileExtension, $allowedExtensions)) {
+		$msg = "Extension not allowed";
+	} elseif (!$isValidMime) {
+		$msg = "MIME type not allowed : " . $mime;
+	} elseif ($fileSize > $maxFileSize) {
+		$msg = "File too large";
+	} elseif (getimagesize($filename)) {
 		$image = imagecreatefromstring(file_get_contents($filename));
 		if (imagejpeg($image, $targetPath, 85)) {
 			$sql = "INSERT INTO pictures(user_id, src) VALUES(?, ?)";
@@ -72,17 +54,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["picture"])) {
 			if ($stmt->execute()) {
 				$msg = "File successfully uploaded";
 			} else {
-				$msg = "Failed to save picture information";
+				$msg = "Something went wrong";
 			}
 		} else {
-			$msg = "Failed to upload picture";
+			$msg = "File is not an image";
 		}
 	} else {
 		$msg = "File is not an image";
 	}
 }
 
-$conn->close();
+$db->closeConnection();
 ?>
 
 <!DOCTYPE html>
