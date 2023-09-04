@@ -60,26 +60,29 @@ class Session
 
 	public function require_not_auth()
 	{
-		if (isset($_SESSION["logged_in"]) && $_SESSION["logged_in"]) {
+		$logged_in = $this->get("logged_in");
+		if ($logged_in) {
 			$this->redirect("index.php");
 		}
 	}
 
 	public function require_auth()
 	{
-		if (!isset($_SESSION["logged_in"]) || !$_SESSION["logged_in"]) {
+		$logged_in = $this->get("logged_in");
+		if (!$logged_in) {
 			$this->redirect("login.php");
 		}
 	}
 
 	public function set_csrf() {
-		if (!isset($_SESSION["csrfToken"])) {
-			$_SESSION["csrfToken"] = bin2hex(random_bytes(32));
+		if (!$this->has("csrfToken")) {
+			$this->set("csrfToken", bin2hex(random_bytes(32)));
 		}
 	}
 
 	public function check_csrf() {
-		if (!isset($_POST["csrfToken"]) || $_POST["csrfToken"] != $_SESSION["csrfToken"]) {
+		$csrfToken = $this->get("csrfToken");
+		if (!$csrfToken || $_POST["csrfToken"] != $csrfToken) {
 			throw new Error("CSRF attack");
 		}
 	}
