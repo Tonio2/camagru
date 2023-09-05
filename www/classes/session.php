@@ -76,7 +76,11 @@ class Session
 
 	public function set_csrf() {
 		if (!$this->has("csrfToken")) {
-			$this->set("csrfToken", bin2hex(random_bytes(32)));
+			$token = bin2hex(random_bytes(32));
+			$this->set("csrfToken", $token);
+			return $token;
+		} else {
+			return $this->get("csrfToken");
 		}
 	}
 

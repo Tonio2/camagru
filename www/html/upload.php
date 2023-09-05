@@ -4,8 +4,7 @@ require_once "../classes/session.php";
 
 $session = new Session();
 $session->require_auth();
-$session->set_csrf();
-$csrfToken = $session->get('csrfToken');
+$csrfToken = $session->set_csrf();
 ?>
 
 <!doctype html>

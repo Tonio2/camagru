@@ -5,7 +5,7 @@ require_once "../classes/database.php";
 
 $session = new Session();
 $session->require_auth();
-$session->set_csrf();
+$csrfToken = $session->set_csrf();
 
 $db = Database::getInstance();
 $conn = $db->getConnection();
@@ -38,7 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
 	<p>Are you sure ? This action is not reversible</p>
 	<form method="post">
-		<input type="hidden" name="csrfToken" value="<?php echo $_SESSION["csrfToken"]; ?>" />
+		<input type="hidden" name="csrfToken" value="<?php echo $csrfToken; ?>" />
 		<input type="submit" value="Delete account" />
 	</form>
 	<?php if (!empty($msg)) : ?>
