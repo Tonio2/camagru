@@ -5,6 +5,12 @@ require_once "../classes/session.php";
 require_once "../classes/database.php";
 require_once "../utils/validate.php";
 
+function imageToBase64($filePath) {
+	$type = pathinfo($filePath, PATHINFO_EXTENSION);
+	$data = file_get_contents($filePath);
+	return 'data:image/' . $type . ';base64,' . base64_encode($data);
+}
+
 function isValidFileExtension($fileExtension, $allowedExtensions)
 {
 	return in_array($fileExtension, $allowedExtensions);
@@ -73,7 +79,7 @@ $session = new Session();
 $session->require_auth();
 $userId = $session->get("userId");
 
-$response = ["success" => false, "msg" => ""];
+$response = ["success" => false, "msg" => "", "img" => ""];
 
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_FILES["picture"]) && isset($_POST["secondImage"])) {
 	$session->check_csrf();
@@ -108,6 +114,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_FILES["picture"]) && isset(
 			if ($stmt->execute()) {
 				$response["success"] = true;
 				$response["msg"] = "File successfully uploaded";
+				$response["img"] = imageToBase64($targetPath);
 			} else {
 				$response["msg"] = "Something went wrong";
 			}

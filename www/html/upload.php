@@ -9,7 +9,7 @@ $csrfToken = $session->set_csrf();
 $userId = $session->get("userId");
 $db = Database::getInstance();
 $conn = $db->getConnection();
-$sql = "SELECT src FROM pictures WHERE user_id = ? ORDER BY created_at DESC";
+$sql = "SELECT src, id FROM pictures WHERE user_id = ? ORDER BY created_at DESC";
 
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $userId);
@@ -27,6 +27,7 @@ $res = $stmt->get_result();
 	<title>Upload or Capture Picture</title>
 	<!-- Bootstrap 5 CSS -->
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 	<style>
 		#canvas {
 			display: none;
@@ -119,11 +120,12 @@ $res = $stmt->get_result();
 			<div class="col-lg-4">
 				<div id="sidebar" class="bg-light p-3 rounded">
 					<h3>Previous Images</h3>
-					<?php
-					while ($row = $res->fetch_assoc()) {
-						echo "<div class='mb-3'><img src='image.php?src=" . $row["src"] . "' alt='picture' class='img-thumbnail'></div>";
-					}
-					?>
+					<?php while ($row = $res->fetch_assoc()) : ?>
+						<div class='mb-3' style="position: relative;" id="img-<?php echo $row['id']; ?>">
+							<img src="<?php echo 'image.php?src=' . $row['src']; ?>" alt='picture' class='img-thumbnail'>
+							<i class="fas fa-trash position-absolute" style="bottom: 10px; right: 10px; cursor:pointer; font-size: 38px; padding: 7px; background-color: white; color: red" onclick="deleteImage(<?php echo $row['id'] . ', \'' . $row['src'] . '\''; ?>)"></i>
+						</div>
+					<?php endwhile; ?>
 				</div>
 			</div>
 		</div>
@@ -161,6 +163,28 @@ $res = $stmt->get_result();
 			});
 		}
 
+		function deleteImage(id, src) {
+			const formData = new FormData();
+			formData.append('csrfToken', document.getElementById('csrf_token').value);
+			formData.append("id", id);
+			formData.append("src", src)
+			fetch('delete_picture.php', {
+					method: 'POST',
+					body: formData,
+				}).then(response => response.json())
+				.then(data => {
+					if (data.success) {
+						const img = document.getElementById("img-" + id);
+						img.remove()
+					} else {
+						errorMessage.textContent = data.msg;
+					}
+				}).catch((error) => {
+					errorMessage.textContent = "Something went wrong, try again"
+				});
+
+		}
+
 		function uploadImage(formData) {
 			formData.append('csrfToken', document.getElementById('csrf_token').value);
 
@@ -185,12 +209,25 @@ $res = $stmt->get_result();
 				}).then(response => response.json())
 				.then(data => {
 					if (data.success) {
-						console.log("File successfully uploaded");
+						const sidebar = document.getElementById("sidebar");
+
+						const newDiv = document.createElement("div");
+						newDiv.className = 'mb-3';
+
+						const newImg = document.createElement("img");
+						newImg.src = data.img;
+						newImg.alt = 'picture';
+						newImg.className = 'img-thumbnail';
+
+						newDiv.appendChild(newImg);
+
+						// Insert the new div at the beginning of the sidebar
+						sidebar.insertBefore(newDiv, sidebar.firstChild.nextSibling.nextSibling);
 					} else {
 						errorMessage.textContent = data.msg;
 					}
 				}).catch((error) => {
-					console.error("Error uploading image:", error);
+					errorMessage.textContent = "Something went wrong, try again"
 				});
 		}
 
