@@ -92,11 +92,9 @@ $res = $stmt->get_result();
 				<video id="webcam" class="w-100 mb-3" autoplay></video>
 				<button id="capture" class="btn btn-primary mb-3">Capture</button>
 				<canvas id="canvas" class="w-100 mb-3"></canvas>
-				<form id="uploadForm" method="POST" enctype="multipart/form-data" class="mb-3">
-					<input type="hidden" id="csrf_token" name="csrfToken" value="<?php echo $csrfToken; ?>">
-					<input type="file" id="picture" name="picture" class="form-control mb-3">
-					<button id="uploadBtn" type="submit" class="btn btn-success">Upload</button>
-				</form>
+				<input type="hidden" id="csrf_token" name="csrfToken" value="<?php echo $csrfToken; ?>">
+				<input type="file" id="picture" name="picture" class="form-control mb-3">
+				<button id="uploadBtn" type="submit" class="btn btn-success">Upload</button>
 			</div>
 			<div class="col-lg-4">
 				<div id="sidebar" class="bg-light p-3 rounded">
@@ -188,7 +186,7 @@ $res = $stmt->get_result();
 		});
 
 		// For file input upload
-		uploadBtn.addEventListener('click', function() {
+		uploadBtn.addEventListener('click', function(e) {
 			const formData = new FormData();
 			formData.append('picture', fileInput.files[0]);
 			uploadImage(formData);
