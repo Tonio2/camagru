@@ -33,30 +33,40 @@ function superposeImages($filename, $alphaImageSrc)
 
 	list($width, $height) = getimagesize($filename);
 	list($alpha_width, $alpha_height) = getimagesize($alphaImageSrc);
+	
+	$square_dimension = max($width, $height);
+	$squareImage = imagecreatetruecolor($square_dimension, $square_dimension);
 
-	imagealphablending($baseImage, true);
-	imagesavealpha($baseImage, true);
+	// Set background to transparent
+	imagealphablending($squareImage, false);
+	imagesavealpha($squareImage, true);
+	$transparent = imagecolorallocatealpha($squareImage, 0, 0, 0, 127);
+	imagefill($squareImage, 0, 0, $transparent);
 
-	// Resize alpha image to match uploaded image dimensions, if needed
-	if ($alpha_width != $width || $alpha_height != $height) {
-		$alpha_image_resized = imagecreatetruecolor($width, $height);
-		imagealphablending($alpha_image_resized, false);
-		imagesavealpha($alpha_image_resized, true);
-		imagecopyresampled($alpha_image_resized, $alphaImage, 0, 0, 0, 0, $width, $height, $alpha_width, $alpha_height);
-		$alpha_image = $alpha_image_resized;
-	}
+	// Calculate offsets to center the uploaded image on square canvas
+	$offsetX = ($square_dimension - $width) / 2;
+	$offsetY = ($square_dimension - $height) / 2;
+
+	// Copy uploaded image onto square canvas
+	imagecopy($squareImage, $baseImage, $offsetX, $offsetY, 0, 0, $width, $height);
+
+	// Prepare alpha image
+	$alpha_image_resized = imagecreatetruecolor($square_dimension, $square_dimension);
+	imagealphablending($alpha_image_resized, false);
+	imagesavealpha($alpha_image_resized, true);
+	imagecopyresampled($alpha_image_resized, $alphaImage, 0, 0, 0, 0, $square_dimension, $square_dimension, $alpha_width, $alpha_height);
 
 	// Merge the images pixel by pixel to respect alpha channel
-	for ($x = 0; $x < $width; $x++) {
-		for ($y = 0; $y < $height; $y++) {
-			$alpha_pixel = imagecolorat($alpha_image, $x, $y);
+	for ($x = 0; $x < $square_dimension; $x++) {
+		for ($y = 0; $y < $square_dimension; $y++) {
+			$alpha_pixel = imagecolorat($alpha_image_resized, $x, $y);
 			$alpha = ($alpha_pixel >> 24) & 0xFF;
 			if ($alpha < 127) { // check if the pixel is transparent
-				imagesetpixel($baseImage, $x, $y, $alpha_pixel);
+				imagesetpixel($squareImage, $x, $y, $alpha_pixel);
 			}
 		}
 	}
-	return $baseImage;
+	return $squareImage;
 }
 
 $session = new Session();
