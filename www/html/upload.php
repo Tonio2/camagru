@@ -51,6 +51,23 @@ $res = $stmt->get_result();
 			border-color: blue;
 			/* Blue border around the selected image */
 		}
+
+		#cameraContainer {
+			background-color: black;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			position: relative;
+		}
+
+		.overlay-image {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			z-index: 2;
+		}
 	</style>
 </head>
 
@@ -89,7 +106,10 @@ $res = $stmt->get_result();
 						</div>
 					</fieldset>
 				</div>
-				<video id="webcam" class="w-100 mb-3" autoplay></video>
+				<div id="cameraContainer" class="w-100 mb-3">
+					<video id="webcam" class="w-100" autoplay></video>
+					<img id="overlayImage" src="" alt="" class="overlay-image">
+				</div>
 				<button id="capture" class="btn btn-primary mb-3">Capture</button>
 				<canvas id="canvas" class="w-100 mb-3"></canvas>
 				<input type="hidden" id="csrf_token" name="csrfToken" value="<?php echo $csrfToken; ?>">
@@ -116,14 +136,6 @@ $res = $stmt->get_result();
 	</footer>
 
 	<script>
-		// JS for toggling the sidebar on mobile
-		document.getElementById('sidebarToggle').addEventListener('click', function() {
-			const sidebar = document.getElementById('sidebar');
-			sidebar.style.display = (sidebar.style.display === 'none' || sidebar.style.display === '') ? 'block' : 'none';
-		});
-	</script>
-
-	<script>
 		const video = document.getElementById('webcam');
 		const canvas = document.getElementById('canvas');
 		const ctx = canvas.getContext('2d');
@@ -132,6 +144,22 @@ $res = $stmt->get_result();
 		const fileInput = document.getElementById('picture');
 		const secondImage = document.getElementsByName('secondImage');
 		const errorMessage = document.getElementById('error-message');
+		const cameraContainer = document.getElementById('cameraContainer');
+		const radioButtons = document.getElementsByName('secondImage');
+		const overlayImage = document.getElementById('overlayImage');
+		overlayImage.hidden = true;
+
+		cameraContainer.style.height = errorMessage.offsetWidth + "px";
+		window.addEventListener("resize", function() {
+			cameraContainer.style.height = errorMessage.offsetWidth + "px";
+		});
+
+		for (let i = 0; i < radioButtons.length; i++) {
+			radioButtons[i].addEventListener('change', function() {
+				overlayImage.hidden = false;
+				overlayImage.src = `image${this.value}.png`;
+			});
+		}
 
 		function uploadImage(formData) {
 			formData.append('csrfToken', document.getElementById('csrf_token').value);
