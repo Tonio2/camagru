@@ -29,4 +29,7 @@ Adding subsequent feature : editing, likes, comment, public page
  - allow user to select the image he wants
  - check how errors are handled
  - ui for upload page
- - refactor to have same ui everywhere
+ - ajaxify the upload page
+ - add picture info and like feature on home page
+ - add comment feature
+ - home ui
