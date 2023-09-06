@@ -29,9 +29,12 @@ $total_pages = ceil($total_pictures / $items_per_page);
 
 $sql = "SELECT pictures.id AS picture_id,
 				pictures.src AS picture_src,
-				COUNT(DISTINCT likes.user_id) AS likes_count
+				COUNT(DISTINCT likes.user_id) AS likes_count,
+				users.username AS username,
+				pictures.created_at AS created_at
 				FROM pictures
 				LEFT JOIN likes ON pictures.id = likes.picture_id
+				JOIN users ON pictures.user_id = users.id
         GROUP BY pictures.id
         ORDER BY pictures.created_at DESC
         LIMIT ? OFFSET ?";
@@ -196,6 +199,68 @@ $res = $stmt->get_result();
 
 	<input type="hidden" id="csrf_token" name="csrfToken" value="<?php echo $csrfToken; ?>" />
 
+	<script>
+		document.addEventListener("DOMContentLoaded", function() {
+			let current_page = 1;
+			const items_per_page = 10;
+			let isLoading = false;
+
+			function loadMore() {
+				current_page++;
+				fetch(`load_more.php?page=${current_page}`)
+					.then(response => response.json())
+					.then(data => {
+						const container = document.querySelector('.row');
+						data.forEach(item => {
+							fetch(`load_comments.php?pictureId=${item.picture_id}`)
+								.then(response => response.json())
+								.then(data => {
+									const comments = `
+										${data.map(comment => `
+											<li class='list-group-item'>
+												<span class='comment-author'>${comment.author}</span> -
+												<span class='comment-date'>${comment.comment_date}</span><br>
+												${comment.comment}
+											</li>
+										`).join('')}
+									`;
+									const newElement = document.createElement('div');
+									newElement.className = 'col-md-4 mb-4';
+									newElement.innerHTML = `
+									<div class='card'>
+										<img src='image.php?src=${item.picture_src}' alt='picture' class='card-img-top'>
+										<div class='card-body'>
+											<h5 class='card-title'>Uploaded by: ${item.username}</h5>
+											<p class='card-text'>Created at: ${item.created_at}</p>
+											<div id='likes-count-${item.picture_id}'>Likes: ${item.likes_count}</div>
+											<button class='btn btn-primary mt-2' onclick='likePicture(${item.picture_id})'>Like</button>
+											<button class='btn btn-secondary mt-2' onclick='toggleComments(\"comment-list-${item.picture_id}\")'>Toggle Comments</button>
+											<ul id='comment-list-${item.picture_id}' class='list-group list-group-flush' style='display:none'>
+															${comments}
+											</ul>
+											<input type='text' id='comment-input-${item.picture_id}' class='form-control mt-2' placeholder='Add a comment'>
+											<button class='btn btn-success mt-2' onclick='addComment(${item.picture_id})'>Comment</button>
+										</div>
+									</div>
+								`;
+
+									container.appendChild(newElement);
+									setTimeout(() => {
+										isLoading = false;
+									}, 500);
+								});
+						});
+					});
+			}
+
+			window.addEventListener('scroll', function() {
+				if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 10 && !isLoading) {
+					isLoading = true;
+					loadMore();
+				}
+			});
+		});
+	</script>
 </body>
 
 </html>
