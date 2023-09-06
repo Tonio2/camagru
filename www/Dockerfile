@@ -7,6 +7,8 @@ RUN apt-get update \
 
 RUN docker-php-ext-install mysqli
 
+RUN apt-get install -y ssmtp mailutils
+
 COPY . /var/www/
 
 COPY ./entrypoint.sh /usr/local/bin/custom-entrypoint
