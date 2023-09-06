@@ -25,7 +25,6 @@ $res = $stmt->get_result();
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Upload or Capture Picture</title>
-	<!-- Bootstrap 5 CSS -->
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 	<style>
@@ -79,7 +78,8 @@ $res = $stmt->get_result();
 			<nav class="navbar navbar-expand-lg navbar-light">
 				<a class="navbar-brand" href="/index.php">Home</a>
 				<div class="navbar-nav">
-					<a class="nav-item nav-link active" href="#">Upload</a>
+					<a class="nav-item nav-link active" href="/upload.php">Upload</a>
+					<a class="nav-item nav-link" href="/account.php">Account</a>
 					<a class="nav-item nav-link" href="/logout.php">Logout</a>
 				</div>
 			</nav>

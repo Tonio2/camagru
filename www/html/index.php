@@ -10,8 +10,6 @@ $csrfToken = $session->set_csrf();
 $db = Database::getInstance();
 $conn = $db->getConnection();
 
-$greeting = "Hello, " . $_SESSION["uname"];
-
 // Pagination settings
 $items_per_page = 10;
 $current_page = isset($_GET['page']) && is_numeric($_GET['page']) ? intval($_GET['page']) : 1;
@@ -49,8 +47,8 @@ $res = $stmt->get_result();
 
 <head>
 	<title>HOME</title>
+	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
@@ -92,16 +90,16 @@ $res = $stmt->get_result();
 					const author = document.createElement('span');
 					const date = document.createElement('span');
 					const br = document.createElement('br');
-					author.innerText =  "<?php echo $session->get("uname") . ' - '; ?>";
+					author.innerText = "<?php echo $session->get("uname") . ' - '; ?>";
 					date.innerText = new Date().toISOString().replace('T', ' ').substring(0, 19);
 					newComment.appendChild(author);
-					
+
 					newComment.appendChild(date);
 					newComment.appendChild(br);
 					const text = document.createElement('span');
 					text.innerText = commentText
 					newComment.appendChild(text)
-					
+
 
 					commentList.prepend(newComment);
 				}).catch((error) => {});
@@ -116,11 +114,21 @@ $res = $stmt->get_result();
 			}
 		}
 	</script>
-	<div class="container mt-5">
-		<p><?php echo htmlentities($greeting, ENT_QUOTES, 'UTF-8'); ?></p>
-		<a href="/logout.php">Logout</a>
-		<a href="/delete.php">Delete account</a>
-		<a href="/upload.php">Upload image</a>
+
+	<header class="bg-light">
+		<div class="container">
+			<nav class="navbar navbar-expand-lg navbar-light">
+				<a class="navbar-brand" href="/index.php">Home</a>
+				<div class="navbar-nav">
+					<a class="nav-item nav-link" href="/upload.php">Upload</a>
+					<a class="nav-item nav-link" href="/account.php">Account</a>
+					<a class="nav-item nav-link" href="/logout.php">Logout</a>
+				</div>
+			</nav>
+		</div>
+	</header>
+
+	<main class="container mt-5">
 		<h2>List of uploaded images</h2>
 		<div class="row">
 			<?php
@@ -157,7 +165,7 @@ $res = $stmt->get_result();
 					echo "</li>";
 				}
 				echo "</ul>";
-				echo "<input type='text' id='comment-input-{$pictureId}' class='form-control' placeholder='Add a comment'>";
+				echo "<input type='text' id='comment-input-{$pictureId}' class='form-control mt-2' placeholder='Add a comment'>";
 				echo "<button class='btn btn-success mt-2' onclick='addComment({$pictureId})'>Comment</button>";
 				echo "</div>";
 				echo "</div>";
@@ -178,7 +186,13 @@ $res = $stmt->get_result();
 				?>
 			</ul>
 		</nav>
-	</div>
+	</main>
+
+	<footer class="bg-light mt-5">
+		<div class="container py-3">
+			<p class="text-center mb-0">Copyright &copy;Antoine 2023, Camagru</p>
+		</div>
+	</footer>
 
 	<input type="hidden" id="csrf_token" name="csrfToken" value="<?php echo $csrfToken; ?>" />
 
