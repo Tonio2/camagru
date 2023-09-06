@@ -9,7 +9,8 @@ CREATE TABLE IF NOT EXISTS users (
 	password VARCHAR(255) NOT NULL,
 	email_validated BOOLEAN DEFAULT 0,
 	email_validation_code VARCHAR(255),
-	password_reset_code VARCHAR(255)
+	password_reset_code VARCHAR(255),
+	email_preference BOOLEAN DEFAULT 1
 );
 
 CREATE TABLE IF NOT EXISTS pictures (
