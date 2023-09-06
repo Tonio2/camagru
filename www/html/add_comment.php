@@ -21,8 +21,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["pictureId"]) && isset
 	$stmt->bind_param("iis", $userId, $pictureId, $comment);
 	if ($stmt->execute()) {
 		$response["success"] = true;
-	} else {
-		$response["msg"] = $stmt->error;
 	}
 }
 header("Content-Type: application/json");

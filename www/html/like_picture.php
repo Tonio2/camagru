@@ -20,8 +20,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["pictureId"])) {
 	$stmt->bind_param("ii", $userId, $pictureId);
 	if ($stmt->execute()) {
 		$response["success"] = true;
-	} else {
-		$response["msg"] = $stmt->error;
 	}
 }
 header("Content-Type: application/json");

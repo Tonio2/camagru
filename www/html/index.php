@@ -69,7 +69,6 @@ $res = $stmt->get_result();
 					if (data.success) {
 						let likesCount = document.getElementById(`likes-count-${pictureId}`).innerText;
 						document.getElementById(`likes-count-${pictureId}`).innerText = "Likes: " + String(parseInt(likesCount.substring(7)) + 1);
-						console.log(document.getElementById(`likes-count-${pictureId}`).innerText)
 					}
 				}).catch((error) => {});
 		}
