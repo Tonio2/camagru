@@ -3,6 +3,7 @@ require_once "../config/config.php";
 require_once "../classes/session.php";
 require_once "../classes/database.php";
 require_once "../utils/validate.php";
+require_once "../utils/mail.php";
 
 $session = new Session();
 $session->require_not_auth();
@@ -19,11 +20,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$errors = validatePassword($pwd);
 	if (validateUsername($uname) && validateEmail($email) && empty($errors)) {
 		$hash = password_hash($pwd, PASSWORD_DEFAULT);
-		$sql = "INSERT INTO users(username, email, password) values(?, ?, ?)";
+		$emailValidationCode = bin2hex(random_bytes(32));
+		$sql = "INSERT INTO users(username, email, password, email_validation_code) values(?, ?, ?, ?)";
 		$stmt = $conn->prepare($sql);
-		$stmt->bind_param("sss", $uname, $email, $hash);
+		$stmt->bind_param("ssss", $uname, $email, $hash, $emailValidationCode);
 		if ($stmt->execute()) {
-			$msg = "Registration successfull";
+			sendConfirmationMail($email, $emailValidationCode);
+			$msg = "Registration successfull. Please check your mails to confirm your email address.";
 		}
 	}
 }

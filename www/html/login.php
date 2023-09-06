@@ -26,15 +26,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		$row = $res->fetch_assoc();
 		$hash = $row["password"];
 		if (password_verify($pwd, $hash)) {
+			if ($row["email_validated"] == 1) {
 			$session->regenerate();
 			$session->set("logged_in", true);
 			$session->set("uname", $row["username"]);
 			$session->set("userId", $row["id"]);
 			$session->redirect("index.php");
+			} else {
+				$msg = "You need to confirm your email";
+			}
 		}
+	} else {
+		$msg = 'invalid credentials';
 	}
 	
-	$msg = 'invalid credentials';
 }
 
 $db->closeConnection();

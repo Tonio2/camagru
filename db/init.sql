@@ -6,7 +6,10 @@ CREATE TABLE IF NOT EXISTS users (
 	id INT AUTO_INCREMENT PRIMARY KEY,
 	username VARCHAR(255) NOT NULL UNIQUE,
 	email VARCHAR(255) NOT NULL UNIQUE,
-	password VARCHAR(255) NOT NULL
+	password VARCHAR(255) NOT NULL,
+	email_validated BOOLEAN DEFAULT 0,
+	email_validation_code VARCHAR(255),
+	password_reset_code VARCHAR(255)
 );
 
 CREATE TABLE IF NOT EXISTS pictures (
