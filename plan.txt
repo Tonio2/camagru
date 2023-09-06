@@ -33,3 +33,17 @@ Adding subsequent feature : editing, likes, comment, public page
  - add picture info and like feature on home page
  - add comment feature
  - home ui
+
+Finals :
+ - check errors in console & console.log & fuzzy testing
+ - check all variables are protected & all forms use csfr
+ - send an email to new user
+ - use this email to send handle confirmation account
+ - add a forgot password page
+ - give each page the same ui 
+ - add an account page to modify user's settings and preference for notification
+ - notif picture authors by mail when comment if settings ok
+ - button to take picture inactive while no second image selected
+ - Do an infinite pagination of the gallery part of the site
+ - Offer the possibility to a user to share his images on social networks
+ - Render an animated GIF
