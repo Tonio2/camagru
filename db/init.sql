@@ -16,3 +16,21 @@ CREATE TABLE IF NOT EXISTS pictures (
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS likes (
+    user_id INT NOT NULL,
+    picture_id INT NOT NULL,
+    FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY(picture_id) REFERENCES pictures(id) ON DELETE CASCADE,
+		PRIMARY KEY (user_id, picture_id)
+);
+
+CREATE TABLE IF NOT EXISTS comments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    picture_id INT NOT NULL,
+    comment TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY(picture_id) REFERENCES pictures(id) ON DELETE CASCADE
+);
