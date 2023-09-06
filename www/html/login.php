@@ -35,6 +35,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 			} else {
 				$msg = "You need to confirm your email";
 			}
+		} else {
+			$msg = 'invalid credentials';
 		}
 	} else {
 		$msg = 'invalid credentials';
@@ -59,6 +61,7 @@ $db->closeConnection();
 		<input type="submit" value="login" />
 	</form>
 	<a href="/register.php">Create an account</a>
+	<a href="forgot_password.php">Forgot password?</a>
 	<?php if (!empty($msg)) : ?>
 		<div class="error-message">
 			<?php echo htmlentities($msg, ENT_QUOTES, 'UTF-8'); ?>
