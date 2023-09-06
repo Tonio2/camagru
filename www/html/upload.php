@@ -111,11 +111,11 @@ $res = $stmt->get_result();
 					<video id="webcam" class="w-100" autoplay></video>
 					<img id="overlayImage" src="" alt="" class="overlay-image">
 				</div>
-				<button id="capture" class="btn btn-primary mb-3">Capture</button>
+				<button id="capture" class="btn btn-primary mb-3" disabled>Capture</button>
 				<canvas id="canvas" class="w-100 mb-3"></canvas>
 				<input type="hidden" id="csrf_token" name="csrfToken" value="<?php echo $csrfToken; ?>">
 				<input type="file" id="picture" name="picture" class="form-control mb-3">
-				<button id="uploadBtn" type="submit" class="btn btn-success">Upload</button>
+				<button id="uploadBtn" type="submit" class="btn btn-success" disabled>Upload</button>
 			</div>
 			<div class="col-lg-4">
 				<div id="sidebar" class="bg-light p-3 rounded">
@@ -160,6 +160,11 @@ $res = $stmt->get_result();
 			radioButtons[i].addEventListener('change', function() {
 				overlayImage.hidden = false;
 				overlayImage.src = `image${this.value}.png`;
+				const btns = document.getElementsByClassName("btn");
+				// enable all btn in btns
+				for (let i = 0; i < btns.length; i++) {
+					btns[i].removeAttribute('disabled');
+				}
 			});
 		}
 
